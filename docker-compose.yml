@@ -56,14 +56,13 @@ services:
       - ./mosquitto/:/mosquitto/
 
   samba:
-    command: '-s "server;/server;yes;no;yes;admin;admin"'
+    command: '-s "server;/server;yes;no;yes;admin;admin" -u="admin;admin;1001;admin"'
     environment:
       - USERID=1000
       - GROUPID=1000
-      - "TZ=${DOCKER_TZ}"
-      - "NMBD=True"
-      - "RECYCLE=False"
-      - "USER=admin;admin;1001;admin"
+      - TZ=${DOCKER_TZ}
+      - NMBD=True
+      - RECYCLE=False
     image: dperson/samba
     network_mode: host
     restart: always
