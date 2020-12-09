@@ -1,7 +1,8 @@
 #!/bin/sh
-mkdir ./choronograf/data
-mkdir ./influxdb/data
-mkdir ./kapacitor/data
-mkdir ./telegraf/data
-mkdir ./mosquitto/data
-mkdir ./mosquitto/log
+mkdir -p ./choronograf/data
+mkdir -p ./influxdb/data
+mkdir -p ./kapacitor/data
+mkdir -p ./telegraf/data
+mkdir -p ./mosquitto/data
+mkdir -p ./mosquitto/log
+mkdir -p ./portainer/data

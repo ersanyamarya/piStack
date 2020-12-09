@@ -2,6 +2,6 @@ install-docker:
 	${PWD}/installDocker.sh
 .phony: install-docker
 
-make-data:
+data:
 	${PWD}/createDataDirectories.sh
-.phony: make-data
+.phony: data

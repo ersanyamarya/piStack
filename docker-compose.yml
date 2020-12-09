@@ -5,10 +5,10 @@ services:
     volumes:
       - ./influxdb/data:/var/lib/influxdb/
       - ./influxdb/config/:/etc/influxdb/
-    ports:
-      - "8086:8086"
-      - "8082:8082"
-      - "8089:8089/udp"
+    # ports:
+    #   - "8086:8086"
+    #   - "8082:8082"
+    #   - "8089:8089/udp"
 
   chronograf:
     image: chronograf:latest
@@ -31,8 +31,8 @@ services:
     environment:
       - HOST_MOUNT_PREFIX=/hostfs
       - HOST_PROC=/hostfs/proc
-    ports:
-      - 8186:8186
+    # ports:
+    #   - 8186:8186
     depends_on:
       - influxdb
 
@@ -41,8 +41,8 @@ services:
     volumes:
       - ./kapacitor/config:/etc/kapacitor/
       - ./kapacitor/data/:/var/lib/kapacitor/
-    ports:
-      - "9092:9092"
+    # ports:
+    #   - "9092:9092"
     depends_on:
       - influxdb
 
@@ -54,3 +54,29 @@ services:
       - 8080:8080
     volumes:
       - ./mosquitto/:/mosquitto/
+
+  samba:
+    command: '-s "server;/server;yes;no;yes;admin;admin"'
+    environment:
+      - USERID=1000
+      - GROUPID=1000
+      - "TZ=${DOCKER_TZ}"
+      - "NMBD=True"
+      - "RECYCLE=False"
+      - "USER=admin;admin;1001;admin"
+    image: dperson/samba
+    network_mode: host
+    restart: always
+    volumes:
+      - "/home/${USER}:/server"
+
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - 9000:9000
+      # - 8000:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer/data:/data
