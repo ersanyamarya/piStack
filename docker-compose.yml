@@ -31,6 +31,7 @@ services:
     environment:
       - HOST_MOUNT_PREFIX=/hostfs
       - HOST_PROC=/hostfs/proc
+      - HOSTNAME=${USER}
     # ports:
     #   - 8186:8186
     depends_on:
@@ -56,7 +57,7 @@ services:
       - ./mosquitto/:/mosquitto/
 
   samba:
-    command: '-s "server;/server;yes;no;yes;admin;admin" -u="admin;admin;1001;admin"'
+    command: '-s "server;/server" -s "Disks;/media;yes;no;no;sanyam" -u "sanyam;storagePassword@1947" -p'
     environment:
       - USERID=1000
       - GROUPID=1000
@@ -68,6 +69,7 @@ services:
     restart: always
     volumes:
       - "/home/${USER}:/server"
+      - "/media:/media"
 
   portainer:
     image: portainer/portainer
