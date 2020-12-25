@@ -1,5 +1,13 @@
 version: "3"
 services:
+  proxy:
+    image: tecnativa/docker-socket-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CONTAINERS=1
+      - INFO=1
+
   influxdb:
     image: influxdb:latest
     volumes:
@@ -27,15 +35,17 @@ services:
       - ./telegraf/config:/etc/telegraf/
       - ./telegraf/data/:/var/lib/telegraf/
       - /:/hostfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - HOST_MOUNT_PREFIX=/hostfs
       - HOST_PROC=/hostfs/proc
       - HOSTNAME=${USER}
+      - DOCKER_HOST=proxy:2375
     # ports:
     #   - 8186:8186
     depends_on:
       - influxdb
+      - proxy
 
   kapacitor:
     image: kapacitor
@@ -47,6 +57,29 @@ services:
     depends_on:
       - influxdb
 
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: $USER
+    ports:
+      - 19999:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - PGID=998
+      - DOCKER_HOST=proxy:2375
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    depends_on:
+      - proxy
+
   mosquitto:
     image: eclipse-mosquitto
     restart: unless-stopped
@@ -57,19 +90,20 @@ services:
       - ./mosquitto/:/mosquitto/
 
   samba:
-    command: '-s "server;/server" -s "Disks;/media;yes;no;no;sanyam" -u "sanyam;storagePassword@1947" -p'
+    command: '-s "weeve;/weeve" -s "unreal;/unreal;yes;yes;no;sanyam;sanyam;sanyam" -u "sanyam;storagePassword@1947" -p'
     environment:
       - USERID=1000
       - GROUPID=1000
-      - TZ=${DOCKER_TZ}
+      - TZ=$DOCKER_TZ
       - NMBD=True
       - RECYCLE=False
     image: dperson/samba
     network_mode: host
     restart: always
     volumes:
-      - "/home/${USER}:/server"
-      - "/media:/media"
+      - "/home/$USER/weeve:/weeve"
+      - "/home/$USER/personal:/unreal"
+      # - "/media:/media"
 
   portainer:
     image: portainer/portainer
