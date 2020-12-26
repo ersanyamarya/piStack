@@ -110,7 +110,7 @@ services:
       - proxy
 
   mosquitto:
-  user: $USER
+    user: $USER
     image: eclipse-mosquitto
     restart: unless-stopped
     ports:
