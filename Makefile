@@ -1,11 +1,11 @@
 install-docker:
-	${PWD}/installDocker.sh
+	${PWD}/bin/installDocker.sh
 .phony: install-docker
 
 data:
-	${PWD}/createDataDirectories.sh
+	${PWD}/bin/createDataDirectories.sh
 .phony: data
 
 delete-data:
-	${PWD}/deleteDataDirectories.sh
+	${PWD}/bin/deleteDataDirectories.sh
 .phony: delete-data
