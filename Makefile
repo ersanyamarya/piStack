@@ -7,7 +7,7 @@ init-letsencrypt:
 	set -a && source .env && ${PWD}/bin/init-letsencrypt.sh
 .phony: init-letsencrypt
 
-data:
+data-folders:
 	${PWD}/bin/createDataDirectories.sh
 .phony: data
 

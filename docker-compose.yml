@@ -22,7 +22,8 @@ services:
       PASS: "admin"
 
   certbot:
-    image: certbot/certbot
+    build:
+      context: ./nginx/certbot
     restart: unless-stopped
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
@@ -110,14 +111,17 @@ services:
       - proxy
 
   mosquitto:
-    user: $USER
     image: eclipse-mosquitto
     restart: unless-stopped
+    environment:
+      - USER=$USER
     ports:
       - 1883:1883
-      - 9091:9091
+      - 8080:8080
     volumes:
-      - ./mosquitto/:/mosquitto/
+      - "./mosquitto/config:/mosquitto/config"
+      - "./mosquitto/data:/mosquitto/data"
+      - "./mosquitto/log:/mosquitto/log"
 
   samba:
     command: '-s "weeve;/weeve" -s "unreal;/unreal;yes;yes;no;$SMB_USER;$SMB_USER;$SMB_USER" -u "$SMB_USER;$SMB_PASSWORD" -pn'
