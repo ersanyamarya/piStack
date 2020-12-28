@@ -2,3 +2,4 @@ data/
 log/
 nginx/certbot/conf
 nginx/certbot/www
+.env
