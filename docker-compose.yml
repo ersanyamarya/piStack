@@ -6,6 +6,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "9090:9090"
     volumes:
       - ./nginx/log:/var/log/nginx
       - ./nginx/www/:/var/www/web
@@ -16,7 +17,7 @@ services:
     depends_on:
       - certbot
       - chronograf
-      - netdata
+      # - netdata
     environment:
       USER: "admin"
       PASS: "admin"
@@ -50,6 +51,8 @@ services:
 
   chronograf:
     image: chronograf:latest
+    env_file: 
+      - ./chronograf/conf/.env
     volumes:
       - ./chronograf/data/:/var/lib/chronograf/
     # ports:
@@ -61,6 +64,8 @@ services:
 
   telegraf:
     image: telegraf
+    env_file: 
+      - ./.env.influxdb
     volumes:
       - ./telegraf/config:/etc/telegraf/
       - ./telegraf/data/:/var/lib/telegraf/
@@ -79,6 +84,8 @@ services:
 
   kapacitor:
     image: kapacitor
+    env_file: 
+      - ./.env.influxdb
     volumes:
       - ./kapacitor/config:/etc/kapacitor/
       - ./kapacitor/data/:/var/lib/kapacitor/
