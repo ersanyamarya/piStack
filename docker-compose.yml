@@ -64,6 +64,7 @@ services:
 
   telegraf:
     image: telegraf
+    hostname: $USER
     env_file: 
       - ./.env.influxdb
     volumes:
@@ -74,7 +75,6 @@ services:
     environment:
       - HOST_MOUNT_PREFIX=/hostfs
       - HOST_PROC=/hostfs/proc
-      - HOSTNAME=${USER}
       - DOCKER_HOST=proxy:2375
     # ports:
     #   - 8186:8186
